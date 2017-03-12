@@ -1,0 +1,22 @@
+{
+    "name": "wdio-selenium-standalone-grid-service",
+    "version": "0.0.0",
+    "description": "selenium grid",
+    "main": "index.js",
+    "repository": "https://github.com/jl-/wdio-selenium-standalone-grid-service.git",
+    "author": "zhengjianglong <jlz.cius@gmail.com>",
+    "license": "MIT",
+    "scripts": {
+        "build": "babel lib --out-dir build"
+    },
+    "dependencies": {
+        "fs-extra": "^2.0.0",
+        "lodash": "^4.17.4",
+        "selenium-standalone": "^6.0.1"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.23.0",
+        "babel-preset-latest": "^6.22.0",
+        "babel-preset-stage-0": "^6.22.0"
+    }
+}
