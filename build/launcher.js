@@ -148,9 +148,9 @@ var SeleniumStandaloneGridLauncher = function () {
     }, {
         key: 'onComplete',
         value: function onComplete() {
-            [this.hub.process].concat(this.nodes.map(function (config) {
-                return config.proceess;
-            })).filter(function (process) {
+            this.nodes.map(function (config) {
+                return config.process;
+            }).concat(this.hub.process).filter(function (process) {
                 return Boolean(process);
             }).forEach(function (process) {
                 return process.kill();
