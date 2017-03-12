@@ -1,3 +1,3 @@
-var SeleniumGridLauncher = require('./build/launcher');
+var SeleniumGridLauncher = require('./build/launcher').default;
 
 module.exports = new SeleniumGridLauncher();
