@@ -1,6 +1,6 @@
 {
     "name": "wdio-selenium-standalone-grid-service",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "selenium grid",
     "main": "index.js",
     "repository": "https://github.com/jl-/wdio-selenium-standalone-grid-service.git",

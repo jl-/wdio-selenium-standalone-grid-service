@@ -4,14 +4,14 @@ start a selenium hub, and then register a node and an appium client
 {
     services: ['selenium-standalone-grid', 'appium'],
     seleniumStandaloneGridArgs: {
-        drivers: { chrome: {}},
         install: {
-            // Object.assign({ drivers }, seleniumStandaloneArgs.install) will be passed on to SeleniumStandalone.install
+            drivers: { chrome: {}},
+            // `seleniumStandaloneArgs.install)` will be passed on to SeleniumStandalone.install
             logger: console.log.bind(console),
         },
         hub: {
             // SeleniumStandalone.start(Object.assign({
-            //     drivers: seleniumStandaloneGridArgs.drivers
+            //     drivers: seleniumStandaloneGridArgs.install.drivers
             // }, seleiumStandaloneGridArgs.hub, {
             //     seleniumArgs: CONVERT_OBJECT_TO_CLI_ARGS({ ...seleniumStandaloneGridArgs.hub.seleniumArgs, role: 'hub' })
             // }));
@@ -25,7 +25,7 @@ start a selenium hub, and then register a node and an appium client
         },
         nodes: [{
             // SeleniumStandalone.start(Object.assign({
-            //     drivers: seleniumStandaloneGridArgs.drivers
+            //     drivers: seleniumStandaloneGridArgs.install.drivers
             // }, seleiumStandaloneGridArgs.nodes[index], {
             //     seleniumArgs: CONVERT_OBJECT_TO_CLI_ARGS({
             //         ...seleniumStandaloneGridArgs.nodes[index].seleniumArgs, role: 'node',

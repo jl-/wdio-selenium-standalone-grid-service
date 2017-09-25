@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _fsExtra = require('fs-extra');
@@ -40,15 +42,18 @@ var SeleniumStandaloneGridLauncher = function () {
             var _this = this;
 
             var config = _ref.seleniumStandaloneGridArgs;
+            var _config$install = config.install,
+                install = _config$install === undefined ? {} : _config$install,
+                _config$hub = config.hub,
+                hub = _config$hub === undefined ? {} : _config$hub,
+                _config$nodes = config.nodes,
+                nodes = _config$nodes === undefined ? [] : _config$nodes;
 
-            var drivers = config.drivers;
-            this.installArgs = Object.assign({ drivers: drivers }, config.install);
-            this.configHub(Object.assign({ drivers: drivers }, config.hub));
-            this.configNodes(config.nodes.map(function (item) {
-                return Object.assign({ drivers: drivers }, item);
+            this.configHub(_extends({}, install, hub));
+            this.configNodes(nodes.map(function (n) {
+                return _extends({}, install, n);
             }));
-
-            return this.installGridDependencies(this.installArgs).then(function () {
+            return this.installGridDependencies(config.install).then(function () {
                 return _this.startHub();
             }).then(function () {
                 return _this.registerNodes();
@@ -56,11 +61,11 @@ var SeleniumStandaloneGridLauncher = function () {
         }
     }, {
         key: 'sanitizeCliArgs',
-        value: function sanitizeCliArgs(argObject) {
-            return Object.keys(argObject).filter(function (key) {
-                return argObject.hasOwnProperty(key);
+        value: function sanitizeCliArgs(args) {
+            return Object.keys(args).filter(function (key) {
+                return args.hasOwnProperty(key);
             }).reduce(function (result, key) {
-                var value = argObject[key];
+                var value = args[key];
                 if (value !== false && value != null) {
                     result.push('-' + key);
                     if (value !== true) {
@@ -72,30 +77,32 @@ var SeleniumStandaloneGridLauncher = function () {
         }
     }, {
         key: 'configHub',
-        value: function configHub() {
-            var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        value: function configHub(config) {
+            var _config$seleniumArgs = config.seleniumArgs,
+                seleniumArgs = _config$seleniumArgs === undefined ? {} : _config$seleniumArgs;
+            var host = seleniumArgs.host,
+                port = seleniumArgs.port;
 
-            this.hub.config = (0, _cloneDeep2.default)(config.seleniumArgs);
-            var _hub$config = this.hub.config,
-                host = _hub$config.host,
-                port = _hub$config.port;
-
+            this.hub.config = _extends({}, seleniumArgs);
             this.hub.config.register = 'http://' + host + ':' + port + '/grid/register';
-            this.hub.args = Object.assign((0, _cloneDeep2.default)(config), {
-                seleniumArgs: this.sanitizeCliArgs(Object.assign({}, config.seleniumArgs, { role: 'hub' }))
+
+            this.hub.args = _extends({}, config, {
+                seleniumArgs: this.sanitizeCliArgs(_extends({}, seleniumArgs, { role: 'hub' }))
             });
         }
     }, {
         key: 'configNodes',
-        value: function configNodes(configs) {
+        value: function configNodes(nodes) {
             var _this2 = this;
 
-            this.nodes = configs.map(function (config) {
-                var seleniumArgs = _this2.sanitizeCliArgs(Object.assign({
+            this.nodes = nodes.map(function (config) {
+                var seleniumArgs = _this2.sanitizeCliArgs(_extends({
                     host: _this2.hub.config.host,
                     hub: _this2.hub.config.register
-                }, config.seleniumArgs, { role: 'node' }));
-                return { args: Object.assign((0, _cloneDeep2.default)(config), { seleniumArgs: seleniumArgs }) };
+                }, config.seleniumArgs, {
+                    role: 'node'
+                }));
+                return { args: _extends({}, config, { seleniumArgs: seleniumArgs }) };
             });
         }
     }, {
