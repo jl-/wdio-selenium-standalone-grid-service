@@ -1,6 +1,6 @@
 {
     "name": "wdio-selenium-standalone-grid-service",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "selenium grid",
     "main": "index.js",
     "repository": "https://github.com/jl-/wdio-selenium-standalone-grid-service.git",
@@ -12,7 +12,7 @@
     "dependencies": {
         "fs-extra": "^2.0.0",
         "lodash": "^4.17.4",
-        "selenium-standalone": "^6.0.1"
+        "selenium-standalone": "^6.9.0"
     },
     "devDependencies": {
         "babel-cli": "^6.23.0",
