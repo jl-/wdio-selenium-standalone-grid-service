@@ -1,0 +1,265 @@
+const HUB_PORT = 4446;
+const HUB_HOST = '127.0.0.1';
+
+exports.config = {
+    //
+    // =====================
+    // Server Configurations
+    // =====================
+    // Host address of the running Selenium server. This information is usually obsolete as
+    // WebdriverIO automatically connects to localhost. Also, if you are using one of the
+    // supported cloud services like Sauce Labs, Browserstack, or Testing Bot you don't
+    // need to define host and port information because WebdriverIO can figure that out
+    // according to your user and key information. However, if you are using a private Selenium
+    // backend you should define the host address, port, and path here.
+    //
+    port: HUB_PORT,
+    host: HUB_HOST,
+    path: '/wd/hub',
+
+    //
+    // ==================
+    // Specify Test Files
+    // ==================
+    // Define which test specs should run. The pattern is relative to the directory
+    // from which `wdio` was called. Notice that, if you are calling `wdio` from an
+    // NPM script (see https://docs.npmjs.com/cli/run-script) then the current working
+    // directory is where your package.json resides, so `wdio` will be called from there.
+    //
+    specs: [
+    ],
+    // Patterns to exclude.
+    exclude: [
+        // 'path/to/excluded/files'
+    ],
+    //
+    // ============
+    // Capabilities
+    // ============
+    // Define your capabilities here. WebdriverIO can run multiple capabilities at the same
+    // time. Depending on the number of capabilities, WebdriverIO launches several test
+    // sessions. Within your capabilities you can overwrite the spec and exclude options in
+    // order to group specific specs to a specific capability.
+    //
+    // First, you can define how many instances should be started at the same time. Let's
+    // say you have 3 different capabilities (Chrome, Firefox, and Safari) and you have
+    // set maxInstances to 1; wdio will spawn 3 processes. Therefore, if you have 10 spec
+    // files and you set maxInstances to 10, all spec files will get tested at the same time
+    // and 30 processes will get spawned. The property handles how many capabilities
+    // from the same test should run tests.
+    //
+    maxInstances: 10,
+    //
+    // If you have trouble getting all important capabilities together, check out the
+    // Sauce Labs platform configurator - a great tool to configure your capabilities:
+    // https://docs.saucelabs.com/reference/platforms-configurator
+    //
+    capabilities: [{
+        platformName: 'iOS',
+        platformVersion: '10.3',
+        deviceName: 'iPhone 6s',
+        autoWebview: true,
+        app: '/Users/jl/workspace/resources/ios/xxx.app'
+    // }, {
+    //     browserName: 'chrome'
+    // }, {
+    //     deviceName: 'SM-G9350',
+    //     platformName: 'android',
+    //     udid: '03kiapoe'
+    }],
+    //
+    // ===================
+    // Test Configurations
+    // ===================
+    // Define all options that are relevant for the WebdriverIO instance here
+    //
+    // By default WebdriverIO commands are executed in a synchronous way using
+    // the wdio-sync package. If you still want to run your tests in an async way
+    // e.g. using promises you can set the sync option to false.
+    sync: true,
+    //
+    // Level of logging verbosity: silent | verbose | command | data | result | error
+    logLevel: 'verbose',
+    //
+    // Enables colors for log output.
+    coloredLogs: true,
+    //
+    // If you only want to run your tests until a specific amount of tests have failed use
+    // bail (default is 0 - don't bail, run all tests).
+    bail: 0,
+    //
+    // Saves a screenshot to a given path if a command fails.
+    screenshotPath: 'test/e2e/screenshots',
+    //
+    // Set a base URL in order to shorten url command calls. If your url parameter starts
+    // with "/", then the base url gets prepended.
+    baseUrl: '',
+    //
+    // Default timeout for all waitFor* commands.
+    waitforTimeout: 10000,
+    //
+    // Default timeout in milliseconds for request
+    // if Selenium Grid doesn't send response
+    connectionRetryTimeout: 90000,
+    //
+    // Default request retries count
+    connectionRetryCount: 3,
+    //
+    // Initialize the browser instance with a WebdriverIO plugin. The object should have the
+    // plugin name as key and the desired plugin options as properties. Make sure you have
+    // the plugin installed before running any tests. The following plugins are currently
+    // available:
+    // WebdriverCSS: https://github.com/webdriverio/webdrivercss
+    // WebdriverRTC: https://github.com/webdriverio/webdriverrtc
+    // Browserevent: https://github.com/webdriverio/browserevent
+    // plugins: {
+    //     webdrivercss: {
+    //         screenshotRoot: 'my-shots',
+    //         failedComparisonsRoot: 'diffs',
+    //         misMatchTolerance: 0.05,
+    //         screenWidth: [320,480,640,1024]
+    //     },
+    //     webdriverrtc: {},
+    //     browserevent: {}
+    // },
+    //
+    // Test runner services
+    // Services take over a specific job you don't want to take care of. They enhance
+    // your test setup with almost no effort. Unlike plugins, they don't add new
+    // commands. Instead, they hook themselves up into the test process.
+    services: ['selenium-standalone-grid', 'appium'],
+
+    seleniumStandaloneGridArgs: {
+        install: {
+            drivers: {
+                chrome: {
+                    version: '2.32',
+                    arch: process.arch,
+                    baseURL: 'https://npm.taobao.org/mirrors/chromedriver'
+                }
+            },
+            version: '3.5.0',
+            baseURL: 'https://npm.taobao.org/mirrors/selenium',
+            // eslint-disable-next-line no-console
+            logger: console.log.bind(console)
+        },
+        hub: {
+            seleniumArgs: {
+                debug: true,
+                host: HUB_HOST,
+                port: HUB_PORT
+            },
+            spawnOptions: {
+                stdio: 'inherit'
+            }
+        }
+    },
+    appium: {
+        waitStartTime: 16000,
+        logFileName: 'test/e2e/logs/appium.log',
+        args: {
+            port: 4720,
+            commandTimeout: '7200',
+            sessionOverride: true,
+            debugLogSpacing: true,
+            isolateSimDevice: true,
+            // https://github.com/SeleniumHQ/selenium/blob/master/java/server/src/org/openqa/grid/common/defaults/DefaultNodeWebDriver.json
+            nodeconfig: 'test/e2e/selenium-nodes/appium.json'
+        }
+    },
+    //
+    // Framework you want to run your specs with.
+    // The following are supported: Mocha, Jasmine, and Cucumber
+    // see also: http://webdriver.io/guide/testrunner/frameworks.html
+    //
+    // Make sure you have the wdio adapter package for the specific framework installed
+    // before running any tests.
+    framework: 'mocha',
+    //
+    // Test reporter for stdout.
+    // The only one supported by default is 'dot'
+    // see also: http://webdriver.io/guide/testrunner/reporters.html
+    reporters: ['spec', 'dot'],
+
+    //
+    // Options to be passed to Mocha.
+    // See the full list at http://mochajs.org/
+    mochaOpts: {
+        ui: 'bdd',
+        timeout: 20000,
+        compilers: ['js:babel-register']
+    },
+    //
+    // =====
+    // Hooks
+    // =====
+    // WebdriverIO provides several hooks you can use to interfere with the test process in order to enhance
+    // it and to build services around it. You can either apply a single function or an array of
+    // methods to it. If one of them returns with a promise, WebdriverIO will wait until that promise got
+    // resolved to continue.
+    //
+    // Gets executed once before all workers get launched.
+    // onPrepare: function (config, capabilities) {
+    // },
+    //
+    // Gets executed just before initialising the webdriver session and test framework. It allows you
+    // to manipulate configurations depending on the capability or spec.
+    // beforeSession: function (config, capabilities, specs) {
+    // },
+    //
+    // Gets executed before test execution begins. At this point you can access all global
+    // variables, such as `browser`. It is the perfect place to define custom commands.
+    before: function (capabilities, specs) {
+        var chai = require('chai');
+        global.expect = chai.expect;
+        chai.Should();
+    }
+    //
+    // Hook that gets executed before the suite starts
+    // beforeSuite: function (suite) {
+    // },
+    //
+    // Hook that gets executed _before_ a hook within the suite starts (e.g. runs before calling
+    // beforeEach in Mocha)
+    // beforeHook: function () {
+    // },
+    //
+    // Hook that gets executed _after_ a hook within the suite starts (e.g. runs after calling
+    // afterEach in Mocha)
+    // afterHook: function () {
+    // },
+    //
+    // Function to be executed before a test (in Mocha/Jasmine) or a step (in Cucumber) starts.
+    // beforeTest: function (test) {
+    // },
+    //
+    // Runs before a WebdriverIO command gets executed.
+    // beforeCommand: function (commandName, args) {
+    // },
+    //
+    // Runs after a WebdriverIO command gets executed
+    // afterCommand: function (commandName, args, result, error) {
+    // },
+    //
+    // Function to be executed after a test (in Mocha/Jasmine) or a step (in Cucumber) starts.
+    // afterTest: function (test) {
+    // },
+    //
+    // Hook that gets executed after the suite has ended
+    // afterSuite: function (suite) {
+    // },
+    //
+    // Gets executed after all tests are done. You still have access to all global variables from
+    // the test.
+    // after: function (result, capabilities, specs) {
+    // },
+    //
+    // Gets executed right after terminating the webdriver session.
+    // afterSession: function (config, capabilities, specs) {
+    // },
+    //
+    // Gets executed after all workers got shut down and the process is about to exit. It is not
+    // possible to defer the end of the process using a promise.
+    // onComplete: function(exitCode) {
+    // }
+};
